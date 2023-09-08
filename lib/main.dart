@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodapplication/features/auth/screens/signin.dart';
 import 'package:foodapplication/features/auth/services/auth_service.dart';
+import 'package:foodapplication/providers/FavoriProduct.dart';
 import 'package:foodapplication/providers/product_provider.dart';
 import 'package:foodapplication/providers/user_provider.dart';
 import 'package:foodapplication/router.dart';
@@ -17,6 +18,8 @@ void main() {
         ),
         
      ChangeNotifierProvider.value(value: Cart()),
+     ChangeNotifierProvider.value(value: FavoriteProduct()),
+
   ], child: const MyApp()));
 }
 
@@ -38,6 +41,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       title: 'Food App',
       debugShowCheckedModeBanner: false,
@@ -50,11 +54,14 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
+      
       onGenerateRoute: (settings) => generateRoute(settings),
       home: Provider.of<UserProvider>(context).user.token.isNotEmpty ?const BottomNavScreen() :const SignupAuthScreen(),
       // home: AuthScreen(),
       // // Set AuthScreen as the home screen
       // routes: {'/home': (context) => Signin()},
     );
+    
+    
   }
 }

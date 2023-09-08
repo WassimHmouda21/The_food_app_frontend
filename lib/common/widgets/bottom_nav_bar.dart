@@ -8,6 +8,7 @@ import 'package:foodapplication/features/auth/screens/signin.dart';
 import 'package:foodapplication/common/widgets/tab_bar.dart';
 
 
+import '../../features/auth/screens/Favorite_screen.dart';
 import '../../features/auth/screens/cart_screen.dart';
 import '../../features/auth/screens/product_screen.dart';
 import '../../features/auth/screens/productbycateg_screen.dart';
@@ -24,7 +25,7 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   //var
   int index = 0;
-  List<Widget> interfaces = [ MyCategoryPage(categories: fetchCategories()), MyHomePage(products: fetchProducts()), const CartPage()];
+  List<Widget> interfaces = [ MyCategoryPage(categories: fetchCategories()), FavoriteProductsPage() , const CartPage()];
   //build
   @override
   Widget build(BuildContext context) {

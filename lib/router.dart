@@ -27,7 +27,13 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (_) => const AuthScreen(),
       );
 
-        case SignupAuthScreen.routeName:
+        case MyHomePage.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => MyHomePage(products: fetchProducts()),
+      );
+
+       case SignupAuthScreen.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const SignupAuthScreen(),

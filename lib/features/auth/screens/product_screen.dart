@@ -25,6 +25,7 @@ if (response.statusCode == 200) {
 }
 
 class MyHomePage extends StatelessWidget {
+  static const String routeName = '/product-screen';
   final String title;
   final Future<List<Product>> products;
 

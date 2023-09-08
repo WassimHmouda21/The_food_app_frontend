@@ -6,6 +6,7 @@ import 'package:foodapplication/features/auth/screens/signin.dart';
 import 'package:foodapplication/common/widgets/bottom_nav_bar.dart';
 
 
+import '../../features/auth/screens/Favorite_screen.dart';
 import '../../features/auth/screens/cart_screen.dart';
 import '../../features/auth/screens/category_screen.dart';
 import '../../features/auth/screens/product_screen.dart';
@@ -94,7 +95,7 @@ class _CustomTabbarState extends State<CustomTabbar> {
           ),
         ),
         body: TabBarView(
-            children: [ MyCategoryPage(categories: fetchCategories()),  MyHomePage(products: fetchProducts()), const CartPage()]),
+            children: [ MyCategoryPage(categories: fetchCategories()), FavoriteProductsPage(), const CartPage()]),
       ),
     );
   }

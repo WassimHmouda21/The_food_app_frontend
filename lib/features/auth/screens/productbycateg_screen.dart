@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../models/product.dart';
 import 'dart:async';
 import '../../../models/category.dart' as AppCategory;
+import '../../../providers/FavoriProduct.dart';
 import '../../../providers/product_provider.dart';
 
 
@@ -127,34 +128,75 @@ class ProductBoxList extends StatelessWidget {
   }
 }
 
-class ProductPage extends StatelessWidget {
+
+
+class ProductPage extends StatefulWidget {
   ProductPage({Key? key, required this.item}) : super(key: key);
   final Product item;
+
+  @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  bool isFavorite = false; // Initially not favorited
+
+  void toggleFavorite() {
+    final favoriteProduct = Provider.of<FavoriteProduct>(context, listen: false);
+
+    // Check if the product is in the list of favorite products
+    final isCurrentlyFavorite = favoriteProduct.favoriteProducts.contains(widget.item);
+
+    setState(() {
+      if (isCurrentlyFavorite) {
+        favoriteProduct.favoriteProducts.remove(widget.item); // Remove from favorites
+      } else {
+        favoriteProduct.favoriteProducts.add(widget.item); // Add to favorites
+      }
+      isFavorite = !isCurrentlyFavorite; // Toggle the favorite status
+    });
+  }
+
+    @override
+  void initState() {
+    super.initState();
+    // Check if the current product is in the list of favorite products when the widget initializes
+    final favoriteProduct = Provider.of<FavoriteProduct>(context, listen: false);
+    isFavorite = favoriteProduct.favoriteProducts.contains(widget.item);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.item.productname),
+        title: Text(widget.item.productname),
+        actions: [
+          IconButton(
+            icon: isFavorite
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_border),
+            onPressed: toggleFavorite,
+          ),
+        ],
       ),
-      body: Center(
+       body: Center(
         child: Container(
           padding: EdgeInsets.all(0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Image.asset(this.item.productimage),
+              Image.asset(this.widget.item.productimage),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.all(5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Text(this.item.productname,
+                      Text(this.widget.item.productname,
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text(this.item.description),
-                      Text("Price: " + this.item.price.toString()),
+                      Text(this.widget.item.description),
+                      Text("Price: " + this.widget.item.price.toString()),
                       SizedBox(height: 5,),
                       Container(
                         height: 30,
@@ -168,7 +210,7 @@ class ProductPage extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             final cart = context.read<Cart>();
-                            cart.addToCart(item); // Add the product to the cart
+                            cart.addToCart(widget.item); // Add the product to the cart
                           },
                           child: Text('Add to Cart'),
                         ),
@@ -185,7 +227,66 @@ class ProductPage extends StatelessWidget {
   }
 }
 
-                             
+// // Rest of your code...
+// class ProductPage extends StatelessWidget {
+//   ProductPage({Key? key, required this.item}) : super(key: key);
+//   final Product item;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(this.item.productname),
+//       ),
+//       body: Center(
+//         child: Container(
+//           padding: EdgeInsets.all(0),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: <Widget>[
+//               Image.asset(this.item.productimage),
+//               Expanded(
+//                 child: Container(
+//                   padding: EdgeInsets.all(5),
+//                   child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                     children: <Widget>[
+//                       Text(this.item.productname,
+//                           style: TextStyle(fontWeight: FontWeight.bold)),
+//                       Text(this.item.description),
+//                       Text("Price: " + this.item.price.toString()),
+//                       SizedBox(height: 5,),
+//                       Container(
+//                         height: 30,
+//                         width: 130,
+//                         decoration: BoxDecoration(
+//                           color: Color.fromARGB(255, 6, 45, 111),
+//                           borderRadius: BorderRadius.horizontal(
+//                             right: Radius.zero,
+//                           ),
+//                         ),
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             final cart = context.read<Cart>();
+//                             cart.addToCart(item); // Add the product to the cart
+//                           },
+//                           child: Text('Add to Cart'),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+                      
       
 
 class ProductBox extends StatelessWidget {

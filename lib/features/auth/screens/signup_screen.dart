@@ -7,6 +7,7 @@ import 'package:foodapplication/common/widgets/custom_textField.dart';
 import 'package:foodapplication/constants/global_variables.dart';
 import 'package:foodapplication/features/auth/screens/signin_screen.dart';
 import 'package:foodapplication/features/auth/services/auth_service.dart';
+import 'package:intl/intl.dart';
 
 enum Auth {
   signup,
@@ -33,6 +34,8 @@ class _AuthScreenState extends State<SignupAuthScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _birthController = TextEditingController();
   final TextEditingController _adressController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  
 
   @override
   void dispose() {
@@ -54,6 +57,9 @@ class _AuthScreenState extends State<SignupAuthScreen> {
         adress: _adressController.text, 
         token: '');
   }
+bool isPasswordConfirmed(String password, String confirmPassword) {
+  return password == confirmPassword;
+}
 
  
 
@@ -72,7 +78,7 @@ class _AuthScreenState extends State<SignupAuthScreen> {
     Text(
       '   welcome, get on board',
       style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
-    ),   const SizedBox(height: 45),
+    ),   const SizedBox(height: 15),
                 ListTile(
                   tileColor: _auth == Auth.signup
                       ? const Color.fromARGB(255, 240, 239, 218)
@@ -117,6 +123,19 @@ class _AuthScreenState extends State<SignupAuthScreen> {
                             controller: _passwordController,
                             hinText: 'Password',
                           ),
+                           const SizedBox(height: 10),
+    const Text(
+      'Confirm Password',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    const SizedBox(height: 10),
+    CustomTextField(
+      controller: _confirmPasswordController,
+      hinText: 'Confirm Password',
+      // Other properties for the confirm password field
+    ),
                           const SizedBox(height: 10),
                          Row(
       children: [  const Text(
@@ -140,10 +159,27 @@ class _AuthScreenState extends State<SignupAuthScreen> {
                   ),],),
                   const SizedBox(height: 10),
                           
-                          CustomTextField(
+                          TextField(
                             controller: _birthController,
-                            hinText: 'Birth',
-                          ),
+                            decoration: const InputDecoration(
+                              icon: Icon(Icons.calendar_today_rounded),
+                              labelText: "Select Birth Date"),
+                              onTap: () async {
+                                DateTime? pickeddate =await showDatePicker(context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1950),
+                                lastDate: DateTime(2030));
+
+                                if(pickeddate != null) {
+                                  setState(() {
+                                    _birthController.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+
+                                  });
+                                }
+                              }
+                            ),
+                            
+                
                           
                           const SizedBox(height: 10),
                           Row(
@@ -162,19 +198,38 @@ class _AuthScreenState extends State<SignupAuthScreen> {
                    ],
                       ),
                     ),
-                  ),   const SizedBox(height: 55), // Add some vertical space here.
+                  ),   const SizedBox(height: 10), // Add some vertical space here.
           Container(
             // Separate container for the CustomButton widget.
             child: CustomButton(
               text: 'Signup',
               onTap: () {
-                if (_signUpFormKey.currentState!.validate()) {
-                  signUpUser();
-                }
+                
+                            // Get the password and confirm password values
+                            String password = _passwordController.text;
+                            String confirmPassword = _confirmPasswordController.text;
+
+                            // Check if passwords match
+                            if (isPasswordConfirmed(password, confirmPassword)) {
+                              // Passwords match, you can proceed with account creation or update
+                              // Create or update the user using the provided password
+                                 if (_signUpFormKey.currentState!.validate()) {
+                                  signUpUser();
+                                    }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                              content: Text('Please confirm the password'),
+                              duration: Duration(seconds: 2), // Adjust the duration as needed
+                              ),
+                             );
+                            }
+                          
+             
                   },
                 ),
               ),
-              const SizedBox(height: 20), // Add some vertical space here.
+              const SizedBox(height: 10), // Add some vertical space here.
 Center(
   child: GestureDetector(
     onTap: () {
