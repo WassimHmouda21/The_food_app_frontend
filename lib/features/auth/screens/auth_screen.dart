@@ -50,7 +50,8 @@ class _AuthScreenState extends State<AuthScreen> {
         username: _usernameController.text,
         birth: _birthController.text,
         adress: _adressController.text, 
-        token: '');
+        token: '',
+       );
   }
 
   void signInUser() {

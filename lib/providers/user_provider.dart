@@ -4,9 +4,6 @@ import 'package:foodapplication/models/user.dart';
 import '../models/product.dart';
 
 class UserProvider extends ChangeNotifier {
-
-
-  
   User _user = User(
     id: '',
     email: '',
@@ -15,6 +12,7 @@ class UserProvider extends ChangeNotifier {
     birth: '',
     adress: '',
     token: '',
+    // Change the type to bool and set it to false by default
   );
 
   User get user => _user;

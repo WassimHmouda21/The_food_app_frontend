@@ -20,23 +20,27 @@ class AuthService {
       'http://localhost:3000'; // Update with your server URL
 
   void signUpUser({
-    required BuildContext context,
-    required String email,
-    required String password,
-    required String username,
-    required String birth,
-    required String adress,
-    required String token,
-  }) async {
-    try {
-      User user = User(
-          id: '',
-          email: email,
-          password: password,
-          username: username,
-          birth: birth,
-          adress: adress,
-          token: token);
+  required BuildContext context,
+  required String email,
+  required String password,
+  required String username,
+  required String birth,
+  required String adress,
+  required String token,
+  // Change the type to bool
+}) async {
+  try {
+    User user = User(
+      id: '',
+      email: email,
+      password: password,
+      username: username,
+      birth: birth,
+      adress: adress,
+      token: token,
+      // Use a bool value here
+    );
+
 
       http.Response res = await http.post(
         Uri.parse(
@@ -61,7 +65,39 @@ class AuthService {
       showSnackBar(context, e.toString());
     }
   }
+Future<void> sendVerificationEmail(BuildContext context, String email) async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://localhost:3000/auth/send/$email'), // Update the route based on your backend API
+    );
 
+    if (response.statusCode == 200) {
+      showSnackBar(context, 'Verification email sent successfully.');
+    } else {
+      showSnackBar(context, 'Failed to send verification email.');
+    }
+  } catch (e) {
+    showSnackBar(context, 'Error sending verification email: $e');
+  }
+}
+Future<void> verifyEmail(String token) async {
+  final Uri uri = Uri.parse('http://localhost:3000/auth/verify/$token');
+
+  try {
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      // Email verified successfully, handle the response as needed
+      print('Email verified successfully');
+    } else {
+      // Handle the case where email verification failed
+      print('Email verification failed');
+    }
+  } catch (e) {
+    // Handle network errors or other exceptions
+    print('Error verifying email: $e');
+  }
+}
   void signInUser({
     required BuildContext context,
     required String email,
@@ -136,6 +172,7 @@ class AuthService {
     }
   }
 }
+
 
 
 Future<List<Product>> getAllProducts() async {

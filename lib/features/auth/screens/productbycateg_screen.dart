@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:html';
 import 'package:flutter/foundation.dart';
+import 'package:foodapplication/common/widgets/custom_textField.dart';
 import 'package:foodapplication/features/auth/services/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'dart:async';
 import '../../../models/category.dart' as AppCategory;
 import '../../../providers/FavoriProduct.dart';
 import '../../../providers/product_provider.dart';
+import '../services/auth_service.dart';
 
 
 List<Product> parseProducts(String responseBody) {
@@ -156,7 +158,9 @@ class _ProductPageState extends State<ProductPage> {
       isFavorite = !isCurrentlyFavorite; // Toggle the favorite status
     });
   }
-
+  
+  final AuthService authService = AuthService();
+  final TextEditingController _emailController = TextEditingController();
     @override
   void initState() {
     super.initState();
@@ -166,66 +170,116 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.item.productname),
-        actions: [
-          IconButton(
-            icon: isFavorite
-                ? const Icon(Icons.favorite)
-                : const Icon(Icons.favorite_border),
-            onPressed: toggleFavorite,
-          ),
-        ],
-      ),
-       body: Center(
-        child: Container(
-          padding: EdgeInsets.all(0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Image.asset(this.widget.item.productimage),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(5),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(widget.item.productname),
+      actions: [
+        IconButton(
+          icon: isFavorite
+              ? const Icon(Icons.favorite)
+              : const Icon(Icons.favorite_border),
+          onPressed: toggleFavorite,
+        ),
+      ],
+    ),
+    body: Center(
+      child: Container(
+        padding: EdgeInsets.all(0),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+          crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+          children: <Widget>[
+            Image.asset(this.widget.item.productimage),
+             const SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.all(5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(this.widget.item.productname,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                       const SizedBox(height: 25),
+                  Text(this.widget.item.description),
+                   const SizedBox(height: 25),
+                  Text("Price: " + this.widget.item.price.toString()),
+                  SizedBox(height: 25,),
+                  Container(
+                    height: 30,
+                    width: 130,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 6, 45, 111),
+                      borderRadius: BorderRadius.horizontal(
+                        right: Radius.zero,
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final cart = context.read<Cart>();
+                        cart.addToCart(widget.item); // Add the product to the cart
+                      },
+                      child: Text('Add to Cart'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 2,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Text(this.widget.item.productname,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text(this.widget.item.description),
-                      Text("Price: " + this.widget.item.price.toString()),
-                      SizedBox(height: 5,),
-                      Container(
-                        height: 30,
-                        width: 130,
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 6, 45, 111),
-                          borderRadius: BorderRadius.horizontal(
-                            right: Radius.zero,
-                          ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Email ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final cart = context.read<Cart>();
-                            cart.addToCart(widget.item); // Add the product to the cart
-                          },
-                          child: Text('Add to Cart'),
-                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      CustomTextField(
+                        controller: _emailController,
+                        hinText: 'Email',
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Verify Email ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final email = _emailController.text;
+                          await authService.sendVerificationEmail(context, email);
+                        },
+                        child: Text('Send Reclamation'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }
+}
+
 
 // // Rest of your code...
 // class ProductPage extends StatelessWidget {

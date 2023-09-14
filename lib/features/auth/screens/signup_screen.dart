@@ -35,7 +35,7 @@ class _AuthScreenState extends State<SignupAuthScreen> {
   final TextEditingController _birthController = TextEditingController();
   final TextEditingController _adressController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  
+  final TextEditingController _otpController = TextEditingController();
 
   @override
   void dispose() {
@@ -55,13 +55,14 @@ class _AuthScreenState extends State<SignupAuthScreen> {
         username: _usernameController.text,
         birth: _birthController.text,
         adress: _adressController.text, 
-        token: '');
+        token: '',
+        );
   }
 bool isPasswordConfirmed(String password, String confirmPassword) {
   return password == confirmPassword;
 }
 
- 
+ bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,7 @@ bool isPasswordConfirmed(String password, String confirmPassword) {
                 
                 ),
                 if (_auth == Auth.signup)
-                  Container(
+                   Container(
                     padding: const EdgeInsets.all(8),
                     color: Colors.white54,
                     child: Form(
@@ -111,31 +112,48 @@ bool isPasswordConfirmed(String password, String confirmPassword) {
                             hinText: 'Email',
                           ),
                           const SizedBox(height: 10),
-                         Row(
-      children: [  const Text(
-                    'Password ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),],),
-                  const SizedBox(height: 10),
-                          CustomTextField(
-                            controller: _passwordController,
-                            hinText: 'Password',
-                          ),
-                           const SizedBox(height: 10),
+                        Row(
+  children: [
     const Text(
-      'Confirm Password',
+      'Password ',
       style: TextStyle(
         fontWeight: FontWeight.bold,
       ),
     ),
-    const SizedBox(height: 10),
-    CustomTextField(
-      controller: _confirmPasswordController,
-      hinText: 'Confirm Password',
-      // Other properties for the confirm password field
+  ],
+),
+const SizedBox(height: 10),
+TextField(
+  controller: _passwordController,
+  obscureText: !_isPasswordVisible, // Obfuscate text when _isPasswordVisible is false
+  decoration: InputDecoration(
+    hintText: 'Password',
+    suffixIcon: IconButton(
+      icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+      onPressed: () {
+        setState(() {
+          _isPasswordVisible = !_isPasswordVisible; // Toggle password visibility
+        });
+      },
     ),
+  ),
+),
+const SizedBox(height: 10),
+const Text(
+  'Confirm Password',
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+  ),
+),
+const SizedBox(height: 10),
+TextField(
+  controller: _confirmPasswordController,
+  obscureText: !_isPasswordVisible, // Obfuscate text when _isPasswordVisible is false
+  decoration: InputDecoration(
+    hintText: 'Confirm Password',
+  ),
+),
+
                           const SizedBox(height: 10),
                          Row(
       children: [  const Text(
@@ -198,7 +216,8 @@ bool isPasswordConfirmed(String password, String confirmPassword) {
                    ],
                       ),
                     ),
-                  ),   const SizedBox(height: 10), // Add some vertical space here.
+                  ),   const SizedBox(height: 10),
+                   // Add some vertical space here.
           Container(
             // Separate container for the CustomButton widget.
             child: CustomButton(
