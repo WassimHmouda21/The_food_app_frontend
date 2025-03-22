@@ -4,7 +4,11 @@ The Food Ordering App is a mobile application built using Flutter for the fronte
  Features:
 
 -User Authentication (Sign Up / Login / Logout)
+
 -Browse Restaurants & Menus
+
 -Add to Cart & Checkout
+
 -Order Tracking
+
 -Favourites list
