@@ -1,7 +1,8 @@
-# The_food_application frontend
+# **The_food_application frontend**
+
 The Food Ordering App is a mobile application built using Flutter for the frontend, with Node.js as the backend and MongoDB as the database. The app allows users to browse food products, add them to the cart, and place orders seamlessly.
 
- Features:
+## **Features:**
 
 -User Authentication (Sign Up / Login / Logout)
 
@@ -11,4 +12,4 @@ The Food Ordering App is a mobile application built using Flutter for the fronte
 
 -Order Tracking
 
--Favourites list
+-Favorites list
